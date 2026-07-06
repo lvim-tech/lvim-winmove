@@ -1,0 +1,114 @@
+*lvim-winmove.txt*        Rearrange windows for the lvim-tech set
+
+==============================================================================
+CONTENTS                                                     *lvim-winmove*
+
+  1. Introduction ........................... |lvim-winmove-intro|
+  2. Requirements ........................... |lvim-winmove-requirements|
+  3. Setup .................................. |lvim-winmove-setup|
+  4. Move mode .............................. |lvim-winmove-mode|
+  5. API .................................... |lvim-winmove-api|
+  6. Command ................................ |lvim-winmove-command|
+  7. Highlights ............................. |lvim-winmove-highlights|
+  8. Health ................................. |lvim-winmove-health|
+
+==============================================================================
+1. INTRODUCTION                                        *lvim-winmove-intro*
+
+lvim-winmove rearranges windows: an interactive move sub-mode (h/j/k/l carry
+the current window through the layout, upper-case far-moves it to an edge, `s`
+swaps with a picked window), plus one-shot directional / far / swap commands.
+
+Moves use the proper window APIs — `win_splitmove()`, native `wincmd H/J/K/L`,
+and a buffer + view swap — never close-and-resplit, so window options and views
+survive. The move mode is a modal `getcharstr()` loop (no timers); the moving
+window carries a subtle focus tint and the statusline shows a "WIN MOVE" title
+(via lvim-hud) while active.
+
+==============================================================================
+2. REQUIREMENTS                                 *lvim-winmove-requirements*
+
+Neovim >= 0.10 and lvim-utils (focus tint). Optional: lvim-winpick (swap picks
+a target; without it, swap falls back to the first other non-wall window) and
+lvim-hud (the WIN MOVE statusline title).
+
+==============================================================================
+3. SETUP                                               *lvim-winmove-setup*
+
+setup() is optional — the defaults work. Call it to change keys/exclusions,
+bind the focus highlight, or register |:LvimWinMove|. >lua
+
+    require("lvim-winmove").setup({
+        keys = {
+            left = "h", down = "j", up = "k", right = "l",
+            far_left = "H", far_down = "J", far_up = "K", far_right = "L",
+            swap = "s", quit = { "q", "<Esc>", "<CR>" },
+        },
+        exclude = {
+            buftype = { "nofile", "prompt", "quickfix", "terminal" },
+            filetype = { "lvim-ui-frame", "lvim-utils-ui", "lvim-lsp-outline",
+                         "lvim-dashboard", "neo-tree", "Fyler", "qf", "help" },
+        },
+        hud_title = true,
+    })
+<
+==============================================================================
+4. MOVE MODE                                            *lvim-winmove-mode*
+
+`:LvimWinMove` with no argument enters move mode:
+
+    h / j / k / l   slide the current window one slot in that direction
+    H / J / K / L   far-move it to that screen edge (full height/width)
+    s               start a swap (pick a target via lvim-winpick)
+    q / <Esc> / <CR>  leave move mode
+
+Windows that are side panels or size-fixed ('winfixwidth'/'winfixheight') act
+as WALLS — a slide never displaces into them. The moving window keeps focus and
+its winid throughout; all state (focus tint, statusline title) is restored on
+exit.
+
+==============================================================================
+5. API                                                   *lvim-winmove-api*
+
+                                                       *lvim-winmove.move()*
+require("lvim-winmove").move({dir})
+    Slide the current window one slot ("left"|"down"|"up"|"right"). Returns
+    false at an edge or against a wall.
+
+                                                        *lvim-winmove.far()*
+require("lvim-winmove").far({dir})
+    Far-move the current window to the {dir} edge (native wincmd H/J/K/L).
+
+                                                       *lvim-winmove.swap()*
+require("lvim-winmove").swap()
+    Swap the current window's content with a picked (or fallback) window —
+    exchanges their buffers and views; each window keeps its position.
+
+                                                      *lvim-winmove.enter()*
+require("lvim-winmove").enter()
+    Open the interactive move sub-mode.
+
+==============================================================================
+6. COMMAND                                           *lvim-winmove-command*
+
+                                                            *:LvimWinMove*
+:LvimWinMove [arg]
+    No arg → move mode. arg ∈ left|right|up|down|far_left|far_right|far_up|
+    far_down|swap → the one-shot action. Registered by setup(); tab-completes
+    the arguments.
+
+==============================================================================
+7. HIGHLIGHTS                                     *lvim-winmove-highlights*
+
+    LvimWinMoveFocus   the moving window's subtle whole-window tint (yellow),
+                       self-themed from lvim-utils
+
+==============================================================================
+8. HEALTH                                            *lvim-winmove-health*
+
+                                          *:checkhealth-lvim-winmove*
+:checkhealth lvim-winmove
+    Reports win_splitmove availability, the lvim-utils base, and the optional
+    lvim-winpick / lvim-hud integrations.
+
+vim:tw=78:ts=8:ft=help:norl:
