@@ -53,6 +53,7 @@ require("lvim-winmove").setup({})
 require("lvim-winmove").move("left") -- one-shot slide
 require("lvim-winmove").far("up") -- far-move to an edge
 require("lvim-winmove").swap() -- pick a target and swap
+require("lvim-winmove").swap_with(win) -- swap with a KNOWN window (the caller resolved it)
 require("lvim-winmove").enter() -- open move mode
 ```
 

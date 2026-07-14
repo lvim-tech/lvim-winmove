@@ -73,6 +73,15 @@ function M.swap()
     return false
 end
 
+--- Swap the current window's content with a KNOWN window — the public seam for a caller that resolved the
+--- target itself (lvim-winnav's directional swap resolves the neighbour and delegates here, so the exchange
+--- lives in ONE place). No-op for an invalid / self target.
+---@param target integer
+---@return boolean swapped
+function M.swap_with(target)
+    return actions.swap(target)
+end
+
 -- ── interactive move mode ────────────────────────────────────────────────────
 
 --- Build the raw-keystroke → action map for move mode from the config keys.

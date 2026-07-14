@@ -84,6 +84,13 @@ require("lvim-winmove").swap()
     Swap the current window's content with a picked (or fallback) window —
     exchanges their buffers and views; each window keeps its position.
 
+                                                  *lvim-winmove.swap_with()*
+require("lvim-winmove").swap_with({win})
+    Swap the current window's content with a KNOWN window — the public seam
+    for a caller that resolved the target itself (lvim-winnav's directional
+    swap resolves the neighbour and delegates here, so the exchange lives in
+    ONE place). No-op for an invalid / self target.
+
                                                       *lvim-winmove.enter()*
 require("lvim-winmove").enter()
     Open the interactive move sub-mode.
