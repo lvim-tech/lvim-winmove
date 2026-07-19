@@ -40,6 +40,11 @@ function M.move(dir)
         return false
     end
     local cur = api.nvim_get_current_win()
+    -- The window being moved is itself a wall (an excluded buffer or a size-fixed panel): relocating
+    -- a fixed-width sidebar with win_splitmove would tear it out of place, so refuse at the source.
+    if layout.is_wall(cur, cfg) then
+        return false
+    end
     local nb = layout.neighbour(cur, dir)
     if not nb or layout.is_wall(nb, cfg) then
         return false
@@ -55,6 +60,9 @@ function M.far(dir)
     local key = FAR[dir]
     if not key then
         return false
+    end
+    if layout.is_wall(api.nvim_get_current_win(), require("lvim-winmove.config")) then
+        return false -- same reason as move(): don't fling an excluded/size-fixed panel to a screen edge
     end
     return pcall(vim.cmd, "wincmd " .. key)
 end
