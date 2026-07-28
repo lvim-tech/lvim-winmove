@@ -47,7 +47,7 @@ bind the focus highlight, or register |:LvimWinMove|. >lua
         exclude = {
             buftype = { "nofile", "prompt", "quickfix", "terminal" },
             filetype = { "lvim-ui-frame", "lvim-utils-ui", "lvim-lsp-outline",
-                         "lvim-dashboard", "neo-tree", "Fyler", "qf", "help" },
+                         "lvim-dashboard", "lvim-files", "qf", "help" },
         },
         hud_title = true,
     })
