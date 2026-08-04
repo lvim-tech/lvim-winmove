@@ -64,7 +64,9 @@ function M.far(dir)
     if layout.is_wall(api.nvim_get_current_win(), require("lvim-winmove.config")) then
         return false -- same reason as move(): don't fling an excluded/size-fixed panel to a screen edge
     end
-    return pcall(vim.cmd, "wincmd " .. key)
+    return pcall(function()
+        vim.cmd("wincmd " .. key)
+    end)
 end
 
 --- Swap the current window's content with `target`'s: exchange their buffers and views. Each
