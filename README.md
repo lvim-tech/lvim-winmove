@@ -90,6 +90,9 @@ require("lvim-winmove").setup({
         },
     },
     hud_title = true, -- show a WIN MOVE title in the statusline (via lvim-hud) while active
+    -- equalise the tab's windows after a move / far-move, as 'equalalways' would; walls keep their size.
+    -- With 'equalalways' off and this off, a window moved to the bottom keeps its full height.
+    equalize = true,
 })
 ```
 

@@ -25,6 +25,7 @@
 ---@field keys      LvimWinMoveKeys      Move-mode keys
 ---@field exclude   LvimWinMoveExclude   Windows never displaced into (walls)
 ---@field hud_title boolean              Announce move mode in the statusline via the lvim-hud overlay
+---@field equalize  boolean              Equalise the tab's windows after a move (walls keep their size)
 
 ---@type LvimWinMoveConfig
 return {
@@ -59,4 +60,8 @@ return {
     },
     -- Show a "WIN MOVE" title in the statusline (via lvim-hud.overlay) while the mode is active.
     hud_title = true,
+    -- After a move or far-move, equalise the tab's windows (`wincmd =`) — what 'equalalways' does natively.
+    -- Walls keep their size. With 'equalalways' off, a moved window otherwise keeps its old size in its new
+    -- place: sent to the bottom, it kept the full height and left the rest ONE row. false = leave sizes alone.
+    equalize = true,
 }

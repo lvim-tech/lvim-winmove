@@ -50,8 +50,15 @@ bind the focus highlight, or register |:LvimWinMove|. >lua
                          "lvim-dashboard", "lvim-files", "qf", "help" },
         },
         hud_title = true,
+        equalize = true,    -- equalise the tab after a move; walls keep their size
     })
 <
+
+`equalize` evens the tab's windows out after every move and far-move (`wincmd =`),
+the way 'equalalways' does natively. Without it — and with 'equalalways' off — a
+moved window keeps its old size in its new place: sent to the bottom, it kept the
+full height and left the rest of the screen one row. Walls (the `exclude` list and
+size-fixed panels) are held at their size through the move either way.
 ==============================================================================
 4. MOVE MODE                                            *lvim-winmove-mode*
 
